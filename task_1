@@ -1,0 +1,60 @@
+import java.util.Scanner;
+
+import static java.lang.Long.toHexString;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int N = scanner.nextInt();
+        scanner.nextLine();
+        for (int i = 0; i < N; i++) {
+            String[] candidateInfo = scanner.nextLine().split(",");
+            String lastName = candidateInfo[0];
+            String firstName = candidateInfo[1];
+            String middleName = candidateInfo[2];
+            int day = Integer.parseInt(candidateInfo[3]);
+            int month = Integer.parseInt(candidateInfo[4]);
+            int year = Integer.parseInt(candidateInfo[5]);
+
+            int uniqueChars = countUniqueCharacters(lastName + firstName + middleName);
+            String nums = String.valueOf(day) + String.valueOf(month);
+            int result = Integer.parseInt(nums);
+            int sumOfBirthDigits = countSum(result);
+            int alphabetPosition = getAlphabetPosition(lastName.charAt(0));
+            int cipherValue = (alphabetPosition * 256 + uniqueChars+sumOfBirthDigits*64) % 4096;
+            String res = Integer.toString(cipherValue, 16).toUpperCase();
+            while (res.length() < 3) {
+                res = "0" + res;
+            }
+            System.out.print(res+" ");
+        }
+
+    }
+
+    private static int countUniqueCharacters(String str) {
+        int[] count = new int[256];
+        int uniqueCount = 0;
+        for (char c : str.toCharArray()) {
+            if (count[c] == 0) {
+                uniqueCount++;
+            }
+            count[c]++;
+        }
+        return uniqueCount;
+    }
+
+    private static int getAlphabetPosition(char c) {
+        c = Character.toLowerCase(c);
+        return c - 'a' + 1;
+    }
+
+    private static int countSum(int number) {
+        int sum = 0;
+        while (number > 0) {
+            int digit = number % 10;
+            sum += digit;
+            number /= 10;
+        }
+        return sum;
+    }
+}
